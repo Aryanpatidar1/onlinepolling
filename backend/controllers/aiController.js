@@ -105,7 +105,7 @@ export const generatePollSuggestions = async (req, res) => {
           },
         ],
       }),
-      signal: AbortSignal.timeout(20_000),
+      signal: AbortSignal.timeout(60_000),
     });
 
     if (!response.ok) {
