@@ -80,7 +80,7 @@ VITE_SOCKET_URL=http://localhost:3001
    your AI provider key in Render's private environment settings. Do not commit
    these values or put the AI key in a `VITE_` variable.
    The Render Blueprint is configured for Google's OpenAI-compatible Gemini
-   endpoint and `gemini-2.5-flash`. After changing `AI_MODEL` in the dashboard,
+   endpoint and `gemini-3.5-flash-lite`. After changing `AI_MODEL` in the dashboard,
    restart the API service.
 3. After the service is live, set these Vercel project environment variables
    and redeploy the frontend:
