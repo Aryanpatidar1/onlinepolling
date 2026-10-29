@@ -82,6 +82,8 @@ export const generatePollSuggestions = async (req, res) => {
   }
 
   const model = process.env.AI_MODEL?.trim() || "gpt-4o-mini";
+  // Render free HTTP limit is ~30s; abort before the host kills the request.
+  const requestTimeoutMs = 25_000;
 
   try {
     const response = await fetch(endpoint, {
@@ -92,7 +94,9 @@ export const generatePollSuggestions = async (req, res) => {
       },
       body: JSON.stringify({
         model,
-        temperature: 0.7,
+        temperature: 0.4,
+        max_tokens: 300,
+        response_format: { type: "json_object" },
         messages: [
           {
             role: "system",
@@ -105,11 +109,14 @@ export const generatePollSuggestions = async (req, res) => {
           },
         ],
       }),
-      signal: AbortSignal.timeout(60_000),
+      signal: AbortSignal.timeout(requestTimeoutMs),
     });
 
     if (!response.ok) {
-      console.error(`AI Poll Copilot provider returned HTTP ${response.status}.`);
+      const providerError = await response.text();
+      console.error(
+        `AI Poll Copilot provider returned HTTP ${response.status}: ${providerError.slice(0, 300)}`,
+      );
       return res.status(502).json({
         message:
           response.status === 429
@@ -127,11 +134,14 @@ export const generatePollSuggestions = async (req, res) => {
     return res.status(200).json({ suggestions: parseSuggestions(content) });
   } catch (error) {
     console.error("AI Poll Copilot request failed:", error.message);
+    const timedOut =
+      error.name === "TimeoutError" ||
+      error.name === "AbortError" ||
+      error.code === "ABORT_ERR";
     return res.status(502).json({
-      message:
-        error.name === "TimeoutError"
-          ? "AI service took too long to respond. Please try again."
-          : "AI service could not generate suggestions. Check the server API settings and try again.",
+      message: timedOut
+        ? "AI service took too long to respond. Please try again."
+        : "AI service could not generate suggestions. Check the server API settings and try again.",
     });
   }
 };

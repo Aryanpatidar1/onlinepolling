@@ -34,10 +34,14 @@ const CreatePoll = () => {
     setAiLoading(true);
     setAiError("");
     try {
-      const { data } = await api.post("/ai/poll-suggestions", {
-        topic: aiTopic.trim(),
-        category,
-      });
+      const { data } = await api.post(
+        "/ai/poll-suggestions",
+        {
+          topic: aiTopic.trim(),
+          category,
+        },
+        { timeout: 30_000 },
+      );
       setQuestion(data.suggestions.question);
       setOptions(data.suggestions.options);
       setErrorMsg("");
