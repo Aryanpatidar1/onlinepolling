@@ -1,0 +1,111 @@
+/* -----------------------------
+   PAGE WRAPPER
+----------------------------- */
+.about-page {
+  padding-top: 80px;
+  padding-bottom: 80px;
+  color: #fff;
+}
+
+/* -----------------------------
+   HERO SECTION
+----------------------------- */
+.about-hero {
+  text-align: center;
+  max-width: 750px;
+  margin: 0 auto 70px;
+  padding: 0 20px;
+}
+
+.about-icon {
+  font-size: 3.5rem;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.about-hero h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.about-subtitle {
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: #cfcfcf;
+}
+
+/* -----------------------------
+   MAIN CONTENT (PARAGRAPHS)
+----------------------------- */
+.about-content {
+  max-width: 850px;
+  margin: 0 auto 60px;
+  padding: 0 20px;
+}
+
+.about-content p {
+  margin-bottom: 22px;
+  line-height: 1.75;
+  color: #d6d6d6;
+  font-size: 1.1rem;
+}
+
+/* -----------------------------
+   HIGHLIGHT BOX
+----------------------------- */
+.about-highlight {
+  max-width: 850px;
+  margin: 0 auto 60px;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 14px;
+  padding: 22px 25px;
+  text-align: center;
+  box-shadow: 0 0 20px #00000070;
+}
+
+.about-highlight p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #e1e1e1;
+  line-height: 1.7;
+}
+
+/* -----------------------------
+   CONTACT BOX
+----------------------------- */
+.about-contact {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.about-contact p {
+  line-height: 1.7;
+  font-size: 1.1rem;
+  color: #cfcfcf;
+}
+
+.about-contact strong {
+  color: #fff;
+}
+
+/* -----------------------------
+   RESPONSIVE
+----------------------------- */
+@media (max-width: 600px) {
+  .about-hero h1 {
+    font-size: 2rem;
+  }
+
+  .about-subtitle,
+  .about-content p {
+    font-size: 1rem;
+  }
+
+  .about-highlight p {
+    font-size: 1rem;
+  }
+}
