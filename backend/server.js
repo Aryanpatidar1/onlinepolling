@@ -9,7 +9,6 @@ import pollRoutes from './routes/pollRoutes.js';
 import voteRoutes from './routes/voteRoutes.js';
 import resultsRoutes from './routes/resultsRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
-import aiRoutes from './routes/aiRoutes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
@@ -62,8 +61,6 @@ app.use('/api/poll', pollRoutes);
 app.use('/api/votes', voteRoutes);
 app.use('/api/results', resultsRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/ai', aiRoutes);
-
 // Health check route
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", message: "Backend is running smoothly" });

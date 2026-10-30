@@ -76,12 +76,8 @@ VITE_SOCKET_URL=http://localhost:3001
 ### Backend on Render.com:
 1. Create a Blueprint on Render and connect this GitHub repo; Render reads
    `render.yaml` to configure the API service.
-2. Set `MONGO_URI` to the MongoDB Atlas connection string and `AI_API_KEY` to
-   your AI provider key in Render's private environment settings. Do not commit
-   these values or put the AI key in a `VITE_` variable.
-   The Render Blueprint is configured for Google's OpenAI-compatible Gemini
-   endpoint and `gemini-3.5-flash-lite`. After changing `AI_MODEL` in the dashboard,
-   restart the API service.
+2. Set `MONGO_URI` to the MongoDB Atlas connection string in Render's private
+   environment settings.
 3. After the service is live, set these Vercel project environment variables
    and redeploy the frontend:
    - `VITE_API_URL`: `https://<your-render-service>.onrender.com/api`
@@ -106,11 +102,3 @@ oldest active admin account, or the oldest active account if no admin exists.
 To choose a specific active account, set `TECH_POLLS_OWNER_EMAIL` before running
 the command. Run this once against the production database after deploying the
 backend if the polls should appear on the live site.
-
-### AI Poll Copilot:
-Set `AI_API_KEY` in the backend environment to enable AI-generated poll
-suggestions. The default endpoint and model use the OpenAI-compatible Chat
-Completions API; set `AI_API_URL` and `AI_MODEL` for a compatible provider.
-The key stays on the server and is never exposed to the frontend. The feature
-requires a logged-in user and shows a configuration message until a key is set.
-For Render, add these values under the backend service's Environment settings.

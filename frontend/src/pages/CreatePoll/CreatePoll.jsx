@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./CreatePoll.css";
-import { FaPlus, FaTrashAlt, FaWhatsapp, FaQrcode, FaExternalLinkAlt, FaMagic, FaCheck } from "react-icons/fa";
+import { FaPlus, FaTrashAlt, FaWhatsapp, FaQrcode, FaExternalLinkAlt, FaCheck } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import api from "../../api/api";
 import ShareModal from "../../components/ShareModal/ShareModal";
@@ -21,39 +21,6 @@ const CreatePoll = () => {
   const [createdSlug, setCreatedSlug] = useState("");
   const [showShareModal, setShowShareModal] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [aiTopic, setAiTopic] = useState("");
-  const [aiLoading, setAiLoading] = useState(false);
-  const [aiError, setAiError] = useState("");
-
-  const generateWithAI = async () => {
-    if (aiTopic.trim().length < 3) {
-      setAiError("Enter a topic with at least 3 characters.");
-      return;
-    }
-
-    setAiLoading(true);
-    setAiError("");
-    try {
-      const { data } = await api.post(
-        "/ai/poll-suggestions",
-        {
-          topic: aiTopic.trim(),
-          category,
-        },
-        { timeout: 30_000 },
-      );
-      setQuestion(data.suggestions.question);
-      setOptions(data.suggestions.options);
-      setErrorMsg("");
-    } catch (err) {
-      setAiError(
-        err.response?.data?.message ||
-          "Could not generate poll suggestions. Please try again.",
-      );
-    } finally {
-      setAiLoading(false);
-    }
-  };
 
   const handleOptionChange = (index, value) => {
     const updated = [...options];
@@ -182,40 +149,6 @@ const CreatePoll = () => {
       {successMsg && <div className="alert alert-success">{successMsg}</div>}
 
       <form className="create-form" onSubmit={handleSubmit}>
-        <section className="ai-poll-copilot" aria-labelledby="ai-copilot-title">
-          <div className="ai-copilot-heading">
-            <span className="ai-copilot-icon"><FaMagic /></span>
-            <div>
-              <h3 id="ai-copilot-title">AI Poll Copilot</h3>
-              <p>Topic do, AI ek ready-to-edit question aur options suggest karega.</p>
-            </div>
-            <span className="ai-copilot-badge">BETA</span>
-          </div>
-          <div className="ai-copilot-controls">
-            <input
-              type="text"
-              aria-label="Poll topic for AI suggestions"
-              placeholder="e.g. AI ka students ki padhai par impact"
-              value={aiTopic}
-              maxLength={180}
-              onChange={(e) => setAiTopic(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") e.preventDefault();
-              }}
-            />
-            <button
-              className="btn ai-generate-btn"
-              type="button"
-              onClick={generateWithAI}
-              disabled={aiLoading || loading}
-            >
-              <FaMagic /> {aiLoading ? "Generating..." : "Generate poll"}
-            </button>
-          </div>
-          {aiError && <p className="ai-copilot-error" role="alert">{aiError}</p>}
-          <small className="hint">Generated content stays editable. Review it before publishing.</small>
-        </section>
-
         {/* question */}
         <div className="form-group">
           <label>Poll Question</label>
