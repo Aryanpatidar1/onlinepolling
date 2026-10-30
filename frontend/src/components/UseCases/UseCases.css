@@ -1,0 +1,75 @@
+.use-cases {
+  width: 90%;
+  max-width: 1400px;
+  margin: 90px auto;
+  color: #fff;
+  text-align: center;
+}
+
+.use-cases-heading {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.use-cases-subheading {
+  max-width: 700px;
+  margin: 10px auto 50px;
+  color: #c5c5c5;
+  font-size: 1.15rem;
+  line-height: 1.6;
+}
+
+.use-cases-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+.use-case-card {
+  padding: 32px 26px;
+  border: 1px solid #2a2a2a;
+  border-radius: 16px;
+  background: #0f0f0f;
+  text-align: left;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.use-case-card:hover {
+  border-color: #3c3c3c;
+  box-shadow: 0 0 25px #00000080;
+}
+
+.use-case-icon {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 20px;
+  place-items: center;
+  border: 1px solid #333;
+  border-radius: 14px;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 1.4rem;
+}
+
+.use-case-card h3 {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+.use-case-card p {
+  margin: 0;
+  color: #cfcfcf;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .use-cases-heading {
+    font-size: 2rem;
+  }
+
+  .use-cases-subheading {
+    font-size: 1rem;
+  }
+}

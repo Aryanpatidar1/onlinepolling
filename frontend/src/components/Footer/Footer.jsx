@@ -26,8 +26,7 @@ const Footer = () => {
           </p>
 
           <p className="footer-mini-text">
-            Trusted by creators, teams, students, and businesses for fast and
-            honest opinions.
+            For classes, events, and group chats that need quick feedback.
           </p>
 
           <div className="footer-socials">

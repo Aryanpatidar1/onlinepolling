@@ -1,7 +1,6 @@
 import React from "react";
 import "./Hero.css";
-import { ReactTyped } from "react-typed";
-import { FaBolt, FaChartLine, FaLink, FaUserSecret, FaQrcode, FaWhatsapp } from "react-icons/fa";
+import { FaBolt, FaChartLine, FaQrcode, FaWhatsapp } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
@@ -11,38 +10,27 @@ const Hero = () => {
       <div className="hero-left">
         <div className="hero-badge">
           <FaBolt className="hero-badge-icon" />
-          <span>Realtime Polling System</span>
+          <span>For classes, events & group chats</span>
         </div>
 
         <h1 className="hero-title">
-          Create polls.  
+          Poll your group.
           <br />
-          Collect <span className="typed-text">
-            <ReactTyped
-              strings={[
-                "Honest Opinions.",
-                "Live Insights.",
-                "Real Feedback.",
-                "Anonymous Votes.",
-              ]}
-              typeSpeed={50}
-              backSpeed={30}
-              loop
-            />
-          </span>
+          <span className="typed-text">See results live.</span>
         </h1>
 
         <p className="hero-subtitle">
-          Conduct fast, simple, and anonymous polls with live results.  
-          Fully secure, real-time, and beautifully designed.
+          Create a poll in seconds, share it on WhatsApp or by QR, and let
+          people vote anonymously without an account when anonymous voting is
+          enabled. Poll creators sign in to publish.
         </p>
 
         <div className="hero-buttons">
           <Link to="/create" className="btn">
-            Create Poll
+            Create a Poll
           </Link>
-          <Link to="/dashboard" className="btn btn-outline">
-            View Dashboard
+          <Link to="/polls" className="btn btn-outline">
+            Explore Polls
           </Link>
         </div>
       </div>
@@ -51,34 +39,31 @@ const Hero = () => {
       <div className="hero-right">
         <div className="hero-card">
           <div className="hero-card-header">
-            <span>Live Preview</span>
-            <span className="hero-status-dot"></span>
+            <span>Example poll</span>
+            <span>Shareable by link or QR</span>
           </div>
 
-          <h3 className="hero-poll-q">Which feature do you like most?</h3>
+          <h3 className="hero-poll-q">What should our group do next?</h3>
 
           <ul className="hero-options">
             <li>
-              <span>Anonymous Voting</span>
-              <div className="bar"><div style={{ width: "70%" }}></div></div>
-              <span>70%</span>
+              <span className="hero-option-dot" />
+              <span>Movie night</span>
             </li>
             <li>
-              <span>Live Insights</span>
-              <div className="bar"><div style={{ width: "55%" }}></div></div>
-              <span>55%</span>
+              <span className="hero-option-dot" />
+              <span>Game night</span>
             </li>
             <li>
-              <span>Shareable Link</span>
-              <div className="bar"><div style={{ width: "40%" }}></div></div>
-              <span>40%</span>
+              <span className="hero-option-dot" />
+              <span>Go out to eat</span>
             </li>
           </ul>
 
           <div className="hero-footer">
             <span><FaQrcode /> QR Scan & Vote</span>
             <span><FaWhatsapp /> WhatsApp Share</span>
-            <span><FaChartLine /> Realtime Socket.IO</span>
+            <span><FaChartLine /> Live results</span>
           </div>
         </div>
       </div>

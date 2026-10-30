@@ -14,12 +14,12 @@ const HowItWorks = () => {
     {
       icon: <FaShareAlt />,
       title: "Share with People",
-      desc: "Copy the unique link and share it anywhere — WhatsApp, Instagram, Email, or SMS.",
+      desc: "Share your poll link in WhatsApp, email, or social media—or let people open it with a QR code.",
     },
     {
       icon: <FaRegLightbulb />,
       title: "Collect Honest Votes",
-      desc: "Your audience votes anonymously or with login based on your settings.",
+      desc: "With anonymous voting enabled, voters can vote without an account. You can also require voters to log in.",
     },
     {
       icon: <FaChartBar />,
@@ -33,7 +33,7 @@ const HowItWorks = () => {
     <section className='howItWorks  container'>
       <h2 className='how-heading'>How  It Works</h2>
       <p className='how-subheading'>
-        Create polls in seconds and get instant, real, and anonymous feedback.
+        Ask your class, event, or group chat a question and see responses update live.
       </p>
 
       <div className="how-grid">

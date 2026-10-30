@@ -10,16 +10,17 @@ const CTA = () => {
         <div className="cta-left">
           <div className="cta-badge">
             <FaBolt />
-            <span>Fast . Simple . Realtime</span>
+            <span>Quick polls for groups</span>
           </div>
 
           <h2 className="cta-title">
-            Ready to collect <span>honest opinions?</span>
+            Get your group&apos;s <span>opinion—live.</span>
           </h2>
 
           <p className="cta-text">
-            Create your first poll in seconds. No signup required for voters.
-            Instant analytics. Completely free.
+            Create a poll in seconds and share it on WhatsApp or by QR. Voters
+            can respond anonymously without an account when anonymous voting
+            is enabled. Poll creators sign in to publish.
           </p>
 
           <div className="cta-actions">
