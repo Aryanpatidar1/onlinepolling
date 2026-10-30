@@ -13,7 +13,7 @@ const useCases = [
     icon: <FaWhatsapp />,
     title: "WhatsApp groups",
     description:
-      "Drop a poll link into the chat and collect votes without asking everyone to sign up.",
+      "Share a poll link in the chat. With anonymous voting on, people can vote without an account.",
   },
   {
     icon: <FaUsers />,
