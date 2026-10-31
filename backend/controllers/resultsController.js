@@ -1,10 +1,16 @@
 import Poll from "../models/Poll.js";
 import Vote from "../models/Vote.js";
+import mongoose from "mongoose";
+import { getAnonymousVoterId } from "../utils/anonymousVoter.js";
 
 export const getPollResults = async (req, res) => {
   try {
     const { pollId } = req.params;
     const user = req.user || null;
+
+    if (!mongoose.isValidObjectId(pollId)) {
+      return res.status(400).json({ message: "Invalid poll ID" });
+    }
 
     const poll = await Poll.findById(pollId);
     if (!poll) return res.status(404).json({ message: "Poll not found" });
@@ -22,12 +28,10 @@ export const getPollResults = async (req, res) => {
       if (user) {
         userHasVoted = await Vote.exists({ pollId, userId: user.id });
       } else {
-        const anonymousId = req.headers["x-anonymous-id"];
-        const ip = req.ip;
-        userHasVoted = await Vote.exists({
-          pollId,
-          $or: [{ anonymousId }, { ip }],
-        });
+        const anonymousId = getAnonymousVoterId(req);
+        userHasVoted = anonymousId
+          ? await Vote.exists({ pollId, anonymousId })
+          : false;
       }
 
       if (!userHasVoted) {

@@ -16,3 +16,7 @@ services:
         value: https://online-polling1.vercel.app
       - key: MONGO_URI
         sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash

@@ -1,12 +1,13 @@
 import { useState } from "react";
 import "./CreatePoll.css";
-import { FaPlus, FaTrashAlt, FaWhatsapp, FaQrcode, FaExternalLinkAlt, FaCheck } from "react-icons/fa";
+import { FaPlus, FaTrashAlt, FaWhatsapp, FaQrcode, FaExternalLinkAlt, FaCheck, FaRobot } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import api from "../../api/api";
 import ShareModal from "../../components/ShareModal/ShareModal";
 
 const CreatePoll = () => {
   const [question, setQuestion] = useState("");
+  const [description, setDescription] = useState("");
   const [options, setOptions] = useState(["", ""]); // minimum 2 options
   const [category, setCategory] = useState("Technology");
   const [allowAnonymous, setAllowAnonymous] = useState(true);
@@ -21,6 +22,9 @@ const CreatePoll = () => {
   const [createdSlug, setCreatedSlug] = useState("");
   const [showShareModal, setShowShareModal] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [topic, setTopic] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState("");
 
   const handleOptionChange = (index, value) => {
     const updated = [...options];
@@ -46,8 +50,8 @@ const CreatePoll = () => {
   };
 
   const validateForm = () => {
-    if (!question.trim()) {
-      setErrorMsg("Question is required.");
+    if (question.trim().length < 2 || question.trim().length > 300) {
+      setErrorMsg("Question must be between 2 and 300 characters.");
       return false;
     }
 
@@ -55,13 +59,23 @@ const CreatePoll = () => {
       .map((o) => o.trim())
       .filter((o) => o.length > 0);
 
-    if (cleanedOptions.length < 2) {
-      setErrorMsg("At least 2 options are required.");
+    if (
+      cleanedOptions.length < 2 ||
+      cleanedOptions.length > 6 ||
+      cleanedOptions.some((option) => option.length > 100) ||
+      new Set(cleanedOptions.map((option) => option.toLocaleLowerCase())).size !== cleanedOptions.length
+    ) {
+      setErrorMsg("Add 2 to 6 unique options, each no longer than 100 characters.");
       return false;
     }
 
-    if (maxVotesPerUser < 1) {
-      setErrorMsg("Max votes per user must be at least 1.");
+    if (!Number.isInteger(maxVotesPerUser) || maxVotesPerUser < 1 || maxVotesPerUser > 10) {
+      setErrorMsg("Max votes per user must be between 1 and 10.");
+      return false;
+    }
+
+    if (expiresAt && new Date(expiresAt) <= new Date()) {
+      setErrorMsg("Expiry must be a future date.");
       return false;
     }
 
@@ -81,13 +95,14 @@ const CreatePoll = () => {
 
     const payload = {
       question: question.trim(),
+      description: description.trim(),
       options: cleanedOptions,
       category,
       settings: {
         allowAnonymous,
         maxVotesPerUser,
         showResultsMode,
-        expiresAt: expiresAt || null,
+        expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null,
       },
     };
 
@@ -120,6 +135,34 @@ const CreatePoll = () => {
     }
   };
 
+  const generateDraft = async (event) => {
+    event.preventDefault();
+    setAiError("");
+    try {
+      setAiLoading(true);
+      const response = await api.post("/ai/generate-poll", { topic });
+      const draft = response.data.draft;
+      setQuestion(draft.question);
+      setDescription(draft.description);
+      setOptions(draft.options);
+      setCategory(draft.category);
+
+      const expiry = new Date(Date.now() + draft.suggestedDurationHours * 60 * 60 * 1000);
+      const localExpiry = new Date(expiry.getTime() - expiry.getTimezoneOffset() * 60000)
+        .toISOString()
+        .slice(0, 16);
+      setExpiresAt(localExpiry);
+    } catch (error) {
+      setAiError(
+        error.response?.data?.message || "Could not generate a poll draft. Please try again."
+      );
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const isAuthenticated = Boolean(localStorage.getItem("token"));
+
   return (
     <main className="page create-poll-page container">
       {/* SHARE MODAL WITH QR & SOCIALS */}
@@ -135,6 +178,38 @@ const CreatePoll = () => {
         Write your question, add options, set poll rules, and share it with a
         link.
       </p>
+
+      <section className="ai-draft-box" aria-labelledby="ai-draft-heading">
+        <div className="ai-draft-heading">
+          <span className="ai-draft-icon"><FaRobot /></span>
+          <div>
+            <h3 id="ai-draft-heading">Start with AI</h3>
+            <p>Turn a topic into an editable poll draft. You stay in control before publishing.</p>
+          </div>
+        </div>
+        <form className="ai-draft-form" onSubmit={generateDraft}>
+          <input
+            type="text"
+            value={topic}
+            onChange={(event) => setTopic(event.target.value)}
+            placeholder="e.g. The future of remote work"
+            aria-label="Topic for AI poll generation"
+            minLength={3}
+            maxLength={300}
+            required
+          />
+          <button
+            className="btn ai-generate-button"
+            type="submit"
+            disabled={aiLoading || !isAuthenticated}
+          >
+            <FaRobot />
+            {aiLoading ? "Generating…" : isAuthenticated ? "Generate draft" : "Login to generate"}
+          </button>
+        </form>
+        {!isAuthenticated && <Link className="ai-login-link" to="/auth">Sign in to use the AI poll generator</Link>}
+        {aiError && <p className="ai-draft-error" role="alert">{aiError}</p>}
+      </section>
 
       {errorMsg && (
         <div className="alert alert-error">
@@ -154,9 +229,22 @@ const CreatePoll = () => {
           <label>Poll Question</label>
           <textarea
             rows="2"
+            maxLength={300}
             placeholder="e.g. Which programming language do you prefer for web development?"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="poll-description">Description <span className="optional-label">Optional</span></label>
+          <textarea
+            id="poll-description"
+            rows="3"
+            maxLength={1000}
+            placeholder="Add context to help people make an informed choice"
+            value={description}
+            onChange={(event) => setDescription(event.target.value)}
           />
         </div>
 
@@ -185,6 +273,7 @@ const CreatePoll = () => {
               <div key={index} className="option-row">
                 <input
                   type="text"
+                  maxLength={100}
                   placeholder={`Option ${index + 1}`}
                   value={opt}
                   onChange={(e) => handleOptionChange(index, e.target.value)}
@@ -237,6 +326,7 @@ const CreatePoll = () => {
             <input
               type="number"
               min="1"
+              max="10"
               value={maxVotesPerUser}
               onChange={(e) => setMaxVotesPerUser(Number(e.target.value) || 1)}
             />

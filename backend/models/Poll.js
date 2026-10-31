@@ -1,4 +1,4 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 
 const optionSchema = new mongoose.Schema({
   text: {
@@ -16,14 +16,22 @@ const pollSchema = new mongoose.Schema(
     question: {
       type: String,
       required: [true, "Question is required"],
+      trim: true,
+      maxlength: 300,
+    },
+    description: {
+      type: String,
+      default: "",
+      trim: true,
+      maxlength: 1000,
     },
     options: {
       type: [optionSchema],
       validate: {
         validator: function (v) {
-          return v.length >= 2;
+          return v.length >= 2 && v.length <= 6;
         },
-        message: "Poll must have at least 2 options",
+        message: "Poll must have between 2 and 6 options",
       },
     },
 
@@ -66,5 +74,7 @@ const pollSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+pollSchema.index({ createdBy: 1, createdAt: -1 }, { name: "polls_by_owner_date" });
 
 export default mongoose.model("Poll", pollSchema);

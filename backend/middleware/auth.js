@@ -1,7 +1,11 @@
 import jwt from "jsonwebtoken";
 
 const getSecret = () => {
-  return process.env.JWT_SECRET || "fallback_default_jwt_secret_online_polling_key_2025";
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error("JWT_SECRET must be configured");
+  }
+  return secret;
 };
 
 export const protect = (req, res, next) => {

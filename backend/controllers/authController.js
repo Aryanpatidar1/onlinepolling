@@ -7,13 +7,20 @@ import generateToken from "../utils/generateToken.js";
 // register
 export const register = async (req, res)=>{
     try {
-        const {name, email, password} = req.body;
+        const name = typeof req.body?.name === "string" ? req.body.name.trim() : "";
+        const email = typeof req.body?.email === "string" ? req.body.email.trim().toLowerCase() : "";
+        const password = typeof req.body?.password === "string" ? req.body.password : "";
 
-
-        // checking fileds are not empty
-        if(!name || !email || !password){
+        if (
+            name.length < 2 ||
+            name.length > 80 ||
+            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+            email.length > 254 ||
+            password.length < 8 ||
+            password.length > 128
+        ) {
             return res.status(400).json({
-                message: "All fields are required"
+                message: "Provide a valid name, email, and password (8-128 characters)",
             });
         };
 
@@ -52,6 +59,9 @@ export const register = async (req, res)=>{
             token,
         });
     } catch (error) {
+        if (error?.code === 11000) {
+            return res.status(409).json({ message: "Email already registered" });
+        }
         console.error("Register Error:", error);
         res.status(500).json({ message: "Server error" });
     }
@@ -63,10 +73,11 @@ export const register = async (req, res)=>{
 
 export const login = async (req, res) => {
     try {
-        const {email, password} = req.body;
+        const email = typeof req.body?.email === "string" ? req.body.email.trim().toLowerCase() : "";
+        const password = typeof req.body?.password === "string" ? req.body.password : "";
 
         // validation
-        if(!email || !password){
+        if(!email || !password || email.length > 254 || password.length > 128){
             return res.status(400).json({ message: "Email & password required" });
         }
 

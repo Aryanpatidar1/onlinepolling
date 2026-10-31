@@ -60,8 +60,33 @@ npm run dev
 PORT=3001
 MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/online-polling?retryWrites=true&w=majority
 CLIENT_ORIGIN=http://localhost:5173
-JWT_SECRET=super_secret_jwt_polling_key_2025
+JWT_SECRET=replace_with_a_unique_random_secret_of_32_or_more_characters
+GEMINI_API_KEY=your_google_gemini_api_key
+GEMINI_MODEL=gemini-2.5-flash
 ```
+
+Use a unique, random `JWT_SECRET` of at least 32 characters in each environment.
+The Gemini key is optional, must be configured on the backend, and must never
+use a `VITE_` prefix. AI-assisted poll drafts and owner-only poll insights return
+a clear configuration error until the key is set. AI requests are authenticated
+and rate-limited.
+
+## Voting integrity and live updates
+
+Votes are rate-limited and validated on the server. MongoDB unique indexes
+prevent a voter from recording the same option twice, while an atomic per-poll
+voter quota enforces each poll's configured vote limit under concurrent
+requests. Anonymous voters use a signed, HTTP-only cookie; vote records store
+an HMAC of the client IP for short-window burst detection rather than storing
+new raw IP addresses. MongoDB indexes are initialized before the API starts.
+Live poll rooms validate poll IDs and broadcast vote changes, connected
+participant counts, and poll status changes. Results remain hidden when the
+poll's visibility setting requires it.
+
+The dashboard includes poll/vote/participant totals, daily voting activity, and
+top polls. Poll owners can request Gemini summaries, trends, caveats, and
+recommendations from the poll page, and generate editable poll drafts from a
+topic on the creation page.
 
 ### Frontend (`frontend/.env`):
 ```env
@@ -77,7 +102,8 @@ VITE_SOCKET_URL=http://localhost:3001
 1. Create a Blueprint on Render and connect this GitHub repo; Render reads
    `render.yaml` to configure the API service.
 2. Set `MONGO_URI` to the MongoDB Atlas connection string in Render's private
-   environment settings.
+   environment settings. Add `GEMINI_API_KEY` in Render's private environment
+   settings to enable the AI features.
 3. After the service is live, set these Vercel project environment variables
    and redeploy the frontend:
    - `VITE_API_URL`: `https://<your-render-service>.onrender.com/api`
